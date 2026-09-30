@@ -53,10 +53,10 @@ if model_loaded:
  col1, col2, col3 = st.columns(3)
  with col1:
   st.subheader("Location Details")
-  rest_lat = st.number_input("Restaurant Latitude", value=22.745, format="%.6f")
-  rest_lon = st.number_input("Restaurant Longitude", value=75.892, format="%.6f")
-  del_lat = st.number_input("Delivery Latitude", value=22.765, format="%.6f")
-  del_lon = st.number_input("Delivery Longitude", value=75.912, format="%.6f")
+  rest_lat = st.number_input("Restaurant Latitude", min_value=-90.0, max_value=90.0, value=22.745, format="%.6f")
+  rest_lon = st.number_input("Restaurant Longitude", min_value=-180.0, max_value=180.0, value=75.892, format="%.6f")
+  del_lat = st.number_input("Delivery Latitude", min_value=-90.0, max_value=90.0, value=22.765, format="%.6f")
+  del_lon = st.number_input("Delivery Longitude", min_value=-180.0, max_value=180.0, value=75.912, format="%.6f")
  with col2:
   st.subheader("Conditions")
   weather = st.selectbox("Weather", ["Sunny","Cloudy","Windy","Fog","Sandstorms","Stormy"])
@@ -114,9 +114,9 @@ if model_loaded:
   X_input_scaled = scaler.transform(X_input)
   prediction = model.predict(X_input_scaled)[0]
   
-  # Display results
-  margin = 4
-  st.markdown(f'<div class="prediction-box"><h2>Estimated Delivery Time</h2><h1 style="font-size:3.5rem;margin:0.5rem 0;">{prediction:.0f} minutes</h1><p style="font-size:1.2rem;">90%% CI: {max(0,prediction-margin):.0f} \u2013 {prediction+margin:.0f} minutes</p></div>', unsafe_allow_html=True)
+  # Display a point prediction without implying an uncalibrated confidence interval.
+  prediction_minutes = max(0.0, float(prediction))
+  st.markdown(f'<div class="prediction-box"><h2>Estimated Delivery Time</h2><h1 style="font-size:3.5rem;margin:0.5rem 0;">{prediction_minutes:.0f} minutes</h1></div>', unsafe_allow_html=True)
   c1,c2,c3 = st.columns(3)
   with c1: st.metric("Distance", f"{distance:.2f} km")
   with c2: st.metric("Bearing", f"{bearing:.1f}\u00b0")
